@@ -1,0 +1,25 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: keycloak-ingress
+  namespace: security
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+
+spec:
+  tls:
+    - hosts:
+        - iam.martens.live
+      secretName: ckm-certificate-secret
+  rules:
+    - host: iam.martens.live
+      http:
+        paths:
+          - backend:
+              service:
+                name: keycloak-http
+                port:
+                  number: 8443
+            path: /
+            pathType: ImplementationSpecific
