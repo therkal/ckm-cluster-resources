@@ -1,0 +1,17 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: 8bm-letsencrypt-production
+spec:
+  acme:
+    email: {{ .Values.acme.email}}
+    # Holds the value for the let's encrypt service granting the certificates
+    server: {{ .Values.acme.server.production }}
+    privateKeySecretRef:
+      # Secret resource that will be used to store the account's private key.
+      name: {{ .Values.acme.privateKeySecretRef.name }}
+    # Add a single challenge solver, HTTP01 using nginx
+    solvers:
+    - http01:
+        ingress:
+          class: nginx

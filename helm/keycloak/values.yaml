@@ -1,0 +1,53 @@
+cloudProvider:
+  name: AWS
+
+keycloak:
+  image:
+    # The Keycloak image repository
+    repository: quay.io/keycloak/keycloak
+    # Overrides the Keycloak image tag whose default is the chart appVersion
+    tag: "19.0.1-legacy"
+  # Mount certificate
+  extraVolumes: |
+    - name: keycloak-certificate
+      secret:
+        secretName: ckm-certificate-secret
+        defaultMode: 511
+        optional: false
+  # Mount in keycloak pod, so that Keycloak can mount certificate and generate keystore.
+  extraVolumeMounts: |
+    - name: keycloak-certificate
+      mountPath: /etc/x509/https
+
+service:
+  port: 8443
+
+
+ingress:
+  className: "nginx"
+  enabled: true
+  annotations:
+    # kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: 8bm-letsencrypt-production
+    # if TLS is enabled, forward TLS traffic into pod
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    ## For more information: https://cert-manager.io/docs/troubleshooting/acme/
+    # Needed for AWS loadbalancer not to attach another IP-address to ingress route.
+    acme.cert-manager.io/http01-edit-in-place: 'true'
+    # Needed for AWS loadbalancer to temporarily attach a self-signed certificate to the route.
+    cert-manager.io/issue-temporary-certificate: 'true'
+  hosts:
+    - host: iam.martens.live
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: keycloak-http
+              port:
+                number: 8443
+  tls: 
+    # Secret will be generated: give it a name
+    - secretName: ckm-certificate-secret
+      hosts:
+        - iam.martens.ive
