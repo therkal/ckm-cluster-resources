@@ -1,0 +1,11 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: ckm-images
+  labels:
+    strimzi.io/cluster: {{ .Values.kafka.clusterName }}
+spec:
+  partitions: {{ .Values.kafka.topics.defaultPartitionSize }}
+  replicas: {{ .Values.kafka.topics.defaultReplicaSize }}
+  config:
+    retention.ms: 7200000

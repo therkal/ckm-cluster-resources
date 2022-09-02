@@ -1,0 +1,9 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: ckm-galleries
+  labels:
+    strimzi.io/cluster: {{ .Values.kafka.clusterName }}
+spec:
+  partitions: {{ .Values.kafka.topics.defaultPartitionSize }}
+  replicas: {{ .Values.kafka.topics.defaultReplicaSize }}

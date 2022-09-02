@@ -1,0 +1,19 @@
+
+kafka:
+  clusterName: kafka-cluster
+  instances: 3
+  listeners:
+    tls:
+      port: 9093
+    plain:
+      port: 9092
+  storage:
+    volume: 
+      size: 1Gi
+  topics:
+    defaultPartitionSize: 1
+    defaultReplicaSize: 1
+zookeeper:
+  storage: 
+    volume:
+      size: 1Gi
